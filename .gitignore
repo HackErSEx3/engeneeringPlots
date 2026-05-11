@@ -1,0 +1,36 @@
+# --- Excluded by user request: third-party reference package ---
+ngx-radial-area-package/
+
+# --- macOS / IDE noise ---
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.history/
+.claude/
+
+# --- Node / Angular build artifacts ---
+node_modules/
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/cache/
+.angular/
+*.tsbuildinfo
+
+# --- Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# --- Test / coverage ---
+coverage/
+.nyc_output/
+
+# --- Environment ---
+.env
+.env.*
+!.env.example
