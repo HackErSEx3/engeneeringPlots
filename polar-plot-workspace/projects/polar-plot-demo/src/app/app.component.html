@@ -1,0 +1,184 @@
+<div class="demo-shell">
+  <header class="demo-header">
+    <div class="demo-header-inner">
+      <div>
+        <h1 class="demo-title">ngx-polar-plot</h1>
+        <p class="demo-subtitle">Angular 19 + D3 v7 &mdash; polar &amp; radial area charts</p>
+      </div>
+      <span class="demo-badge">v1.0.0</span>
+    </div>
+  </header>
+
+  <main class="demo-main">
+    <aside class="demo-sidebar">
+
+      <section class="demo-card">
+        <h2 class="demo-card-title">Chart Type</h2>
+        <div class="demo-btn-group">
+          <button type="button" [class.active]="chartType === 'polar'" (click)="switchChartType('polar')">
+            Polar Plot
+          </button>
+          <button type="button" [class.active]="chartType === 'radial'" (click)="switchChartType('radial')">
+            Radial Area
+          </button>
+        </div>
+      </section>
+
+      @if (chartType === 'polar') {
+        <section class="demo-card">
+          <h2 class="demo-card-title">Display</h2>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="polarShowGrid" (change)="togglePolarGrid()" />
+            <span>Grid rings</span>
+          </label>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="polarShowSpokes" (change)="togglePolarSpokes()" />
+            <span>Spokes</span>
+          </label>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="polarShowVector" (change)="togglePolarVector()" />
+            <span>Vector line</span>
+          </label>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="polarShowLabels" (change)="togglePolarLabels()" />
+            <span>Data labels</span>
+          </label>
+        </section>
+
+        @if (polarShowLabels) {
+          <section class="demo-card">
+            <h2 class="demo-card-title">Label format</h2>
+            <div class="demo-btn-group">
+              <button type="button"
+                [class.active]="polarLabelMode === 'datetime'"
+                (click)="setPolarLabelMode('datetime')">
+                Datetime
+              </button>
+              <button type="button"
+                [class.active]="polarLabelMode === 'speed'"
+                (click)="setPolarLabelMode('speed')">
+                Speed (rpm)
+              </button>
+            </div>
+            <div class="demo-hint" style="margin-top:6px">
+              Labels use spatial-grid O(1) placement — no overlaps even at 5 000+ points.
+            </div>
+          </section>
+        }
+
+        <section class="demo-card">
+          <h2 class="demo-card-title">Zoom</h2>
+          <div class="demo-stat">
+            <span class="demo-stat-label">Level</span>
+            <span class="demo-stat-value">{{ polarZoom.toFixed(2) }}&times;</span>
+          </div>
+          <div class="demo-hint" style="margin-top:6px">Scroll over the chart to zoom the amplitude axis.</div>
+        </section>
+
+        <section class="demo-card">
+          <h2 class="demo-card-title">Data format</h2>
+          <p class="demo-hint">Each point: angle in degrees (0°&nbsp;=&nbsp;top, clockwise) and any numeric amplitude value.</p>
+        </section>
+
+        <section class="demo-card demo-usage-card">
+          <h2 class="demo-card-title">Usage</h2>
+<pre class="demo-code"><code>&lt;ngx-polar-plot
+  [data]="data"
+  [config]="config"
+  (pointSelected)="onPoint($event)"
+&gt;&lt;/ngx-polar-plot&gt;</code></pre>
+        </section>
+
+        @if (selectedPoint) {
+          <section class="demo-card">
+            <h2 class="demo-card-title">Selected point</h2>
+            <div class="demo-stat">
+              <span class="demo-stat-label">Angle</span>
+              <span class="demo-stat-value">{{ selectedPoint.phaseValue }}°</span>
+            </div>
+            <div class="demo-stat">
+              <span class="demo-stat-label">Amplitude</span>
+              <span class="demo-stat-value">{{ selectedPoint.amplitudeValue }}</span>
+            </div>
+          </section>
+        }
+      }
+
+      @if (chartType === 'radial') {
+        <section class="demo-card">
+          <h2 class="demo-card-title">Dataset</h2>
+          <div class="demo-btn-group">
+            <button type="button" [class.active]="activeDataset === 'weather'" (click)="switchDataset('weather')">
+              Weather
+            </button>
+            <button type="button" [class.active]="activeDataset === 'performance'" (click)="switchDataset('performance')">
+              Server Load
+            </button>
+          </div>
+        </section>
+
+        <section class="demo-card">
+          <h2 class="demo-card-title">Display</h2>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="showGrid" (change)="toggleGrid()" />
+            <span>Grid rings</span>
+          </label>
+          <label class="demo-toggle">
+            <input type="checkbox" [checked]="showSpokes" (change)="toggleSpokes()" />
+            <span>Spokes</span>
+          </label>
+        </section>
+
+        <section class="demo-card">
+          <h2 class="demo-card-title">Zoom state</h2>
+          <div class="demo-stat">
+            <span class="demo-stat-label">Current scale</span>
+            <span class="demo-stat-value">{{ currentZoom.toFixed(2) }}&times;</span>
+          </div>
+          <div class="demo-stat">
+            <span class="demo-stat-label">Range</span>
+            <span class="demo-stat-value">0.35 &ndash; 5.0</span>
+          </div>
+        </section>
+
+        <section class="demo-card demo-usage-card">
+          <h2 class="demo-card-title">Usage</h2>
+<pre class="demo-code"><code>&lt;ngx-radial-area
+  [data]="data"
+  [series]="series"
+  [config]="config"
+  (zoomChange)="onZoom($event)"
+  (zoomReset)="onReset()"
+&gt;&lt;/ngx-radial-area&gt;</code></pre>
+        </section>
+      }
+
+    </aside>
+
+    <section class="demo-chart-panel">
+      @if (chartType === 'polar') {
+        <ngx-polar-plot
+          [data]="polarData"
+          [config]="polarConfig"
+          (pointSelected)="onPointSelected($event)"
+          (zoomChange)="onPolarZoom($event)"
+        ></ngx-polar-plot>
+      }
+      @if (chartType === 'radial') {
+        <ngx-radial-area
+          [data]="activeData"
+          [series]="activeSeries"
+          [config]="chartConfig"
+          [showControls]="true"
+          [showHint]="true"
+          (zoomChange)="onZoomChange($event)"
+          (zoomReset)="onZoomReset()"
+        ></ngx-radial-area>
+      }
+    </section>
+  </main>
+
+  <footer class="demo-footer">
+    Built with <strong>D3.js v7</strong> &amp; <strong>Angular 19</strong>
+  </footer>
+</div>

@@ -1,0 +1,8 @@
+you are an fronendt architect which has all knowledge of angualar and d3js ,
+
+1. create angular workspace, which can have d3 polar plot library
+2. angular application which injects that library anf runs
+3. use reference from ./ngx-radial-area-package
+4. use md file for better understanding of what you have to from /Users/devangbarot/Devang/angular-workspace/reasearch/d3-radial-area-plot-research.md
+5. use angular v19 for all the cases,
+6. add the test cases into both library and angular application
