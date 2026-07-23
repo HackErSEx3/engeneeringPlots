@@ -15,11 +15,14 @@
       <section class="demo-card">
         <h2 class="demo-card-title">Chart Type</h2>
         <div class="demo-btn-group">
-          <button type="button" [class.active]="chartType === 'polar'" (click)="switchChartType('polar')">
+          <button type="button" [class.active]="chartType === 'polar'" (click)="chartType = 'polar'">
             Polar Plot
           </button>
-          <button type="button" [class.active]="chartType === 'radial'" (click)="switchChartType('radial')">
+          <button type="button" [class.active]="chartType === 'radial'" (click)="chartType = 'radial'">
             Radial Area
+          </button>
+          <button type="button" [class.active]="chartType === 'bode'" (click)="chartType = 'bode'">
+            Bode
           </button>
         </div>
       </section>
@@ -153,6 +156,64 @@
         </section>
       }
 
+      @if (chartType === 'bode') {
+        <section class="demo-card">
+          <h2 class="demo-card-title">Dataset</h2>
+          <div class="demo-hint">
+            <strong>{{ bodeComposite.label }}</strong><br />
+            {{ bodeComposite.amplitude.xValues.length }} samples ·
+            X range {{ bodeAxis.xRange[0] }}&ndash;{{ bodeAxis.xRange[1] }} rpm
+          </div>
+        </section>
+
+        <section class="demo-card">
+          <h2 class="demo-card-title">Zoom</h2>
+          <div class="demo-btn-group demo-btn-group-stack">
+            <button type="button" (click)="bodeZoomOutOne()">Zoom out one level</button>
+            <button type="button" (click)="bodeZoomOutAll()">Zoom out all</button>
+            <button type="button" (click)="bodeResetZoom()">Reset</button>
+          </div>
+          <div class="demo-hint" style="margin-top:6px">
+            Wheel over the X axis / phase Y / amp Y to zoom that scale.<br />
+            Left drag inside a region rubber-band zooms. Right-to-left drag = zoom out one level.
+          </div>
+        </section>
+
+        @if (bodeCursors.length > 0) {
+          <section class="demo-card">
+            <h2 class="demo-card-title">Cursor A</h2>
+            <div class="demo-stat">
+              <span class="demo-stat-label">Speed</span>
+              <span class="demo-stat-value">{{ bodeCursors[0].xValue }} rpm</span>
+            </div>
+            <div class="demo-stat">
+              <span class="demo-stat-label">Amplitude</span>
+              <span class="demo-stat-value">{{ bodeCursors[0].ampValue }} {{ bodeAxis.yAmpUnit }}</span>
+            </div>
+            @if (bodeCursors[0].phaseValue !== undefined) {
+              <div class="demo-stat">
+                <span class="demo-stat-label">Phase</span>
+                <span class="demo-stat-value">{{ bodeCursors[0].phaseValue }}°</span>
+              </div>
+            }
+            <div class="demo-stat">
+              <span class="demo-stat-label">Time</span>
+              <span class="demo-stat-value">{{ formatTimestamp(bodeCursors[0].timestampUtc) }}</span>
+            </div>
+          </section>
+        }
+
+        <section class="demo-card demo-usage-card">
+          <h2 class="demo-card-title">Usage</h2>
+<pre class="demo-code"><code>&lt;ngx-bode-plot
+  [compositeCurves]="[composite]"
+  [axisState]="axis"
+  [cursors]="cursors"
+  (cursorStateChange)="cursors = $event"
+&gt;&lt;/ngx-bode-plot&gt;</code></pre>
+        </section>
+      }
+
     </aside>
 
     <section class="demo-chart-panel">
@@ -174,6 +235,16 @@
           (zoomChange)="onZoomChange($event)"
           (zoomReset)="onZoomReset()"
         ></ngx-radial-area>
+      }
+      @if (chartType === 'bode') {
+        <ngx-bode-plot
+          [compositeCurves]="[bodeComposite]"
+          [axisState]="bodeAxis"
+          [cursors]="bodeCursors"
+          [config]="bodeConfig"
+          (cursorStateChange)="onBodeCursorChange($event)"
+          (axisStateChange)="onBodeAxisChange($event)"
+        ></ngx-bode-plot>
       }
     </section>
   </main>

@@ -6,12 +6,14 @@
     "start": "ng serve polar-plot-demo",
     "build": "ng build polar-plot-demo",
     "build:lib": "ng build ngx-radial-area",
-    "build:all": "npm run build:lib && npm run build",
+    "build:bode": "ng build ngx-bode-plot",
+    "build:all": "npm run build:lib && npm run build:bode && npm run build",
     "watch": "ng build polar-plot-demo --watch --configuration development",
     "test": "ng test",
     "test:lib": "ng test ngx-radial-area --watch=false --browsers=ChromeHeadless",
+    "test:bode": "ng test ngx-bode-plot --watch=false --browsers=ChromeHeadless",
     "test:app": "ng test polar-plot-demo --watch=false --browsers=ChromeHeadless",
-    "test:ci": "npm run test:lib && npm run test:app"
+    "test:ci": "npm run test:lib && npm run test:bode && npm run test:app"
   },
   "private": true,
   "dependencies": {

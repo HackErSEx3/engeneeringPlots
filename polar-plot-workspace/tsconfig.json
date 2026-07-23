@@ -12,6 +12,9 @@
     "paths": {
       "ngx-radial-area": [
         "./projects/ngx-radial-area/src/public-api.ts"
+      ],
+      "ngx-bode-plot": [
+        "./projects/ngx-bode-plot/src/public-api.ts"
       ]
     },
     "skipLibCheck": true,

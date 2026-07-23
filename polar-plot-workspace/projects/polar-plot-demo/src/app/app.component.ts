@@ -15,18 +15,27 @@ import {
   transformCsvToPolarPoints,
   CsvLabelMode,
 } from 'ngx-radial-area';
+import {
+  NgxBodePlotComponent,
+  BodeAxisState,
+  BodeCompositeCurve,
+  BodeCursorState,
+  BodePlotConfig,
+  buildSampleComposite,
+} from 'ngx-bode-plot';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxRadialAreaComponent, NgxPolarPlotComponent],
+  imports: [CommonModule, FormsModule, NgxRadialAreaComponent, NgxPolarPlotComponent, NgxBodePlotComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   @ViewChild(NgxPolarPlotComponent) private polarPlotRef?: NgxPolarPlotComponent;
+  @ViewChild(NgxBodePlotComponent)  private bodePlotRef?: NgxBodePlotComponent;
 
-  chartType: 'polar' | 'radial' = 'polar';
+  chartType: 'polar' | 'radial' | 'bode' = 'polar';
 
   // ── Polar plot ─────────────────────────────────────────────────────────────
   polarShowGrid   = true;
@@ -185,5 +194,45 @@ export class AppComponent {
   toggleSpokes(): void {
     this.showSpokes = !this.showSpokes;
     this.chartConfig = { ...this.chartConfig, showSpokes: this.showSpokes };
+  }
+
+  // ── Bode plot ──────────────────────────────────────────────────────────────
+  private readonly bodeSample = buildSampleComposite();
+  bodeComposite: BodeCompositeCurve = this.bodeSample.composite;
+  bodeAxis: BodeAxisState = {
+    xRange: this.bodeSample.axis.xRange ?? [0, 1],
+    yAmpRange: this.bodeSample.axis.yAmpRange ?? [0, 1],
+    yPhaseRange: this.bodeSample.axis.yPhaseRange ?? [0, 360],
+    xUnit: 'RPM',
+    yAmpUnit: this.bodeSample.axis.yAmpUnit ?? 'mil pp',
+    phaseRolloverEnabled: false,
+  };
+  bodeCursors: BodeCursorState[] = [];
+  bodeConfig: Partial<BodePlotConfig> = {
+    width: 900,
+    height: 560,
+    ampRegionRatio: 0.55,
+    gutter: 24,
+    gridTicksX: 8,
+    gridTicksY: 5,
+    enableCursorA: true,
+  };
+
+  onBodeCursorChange(state: BodeCursorState[]): void {
+    this.bodeCursors = state;
+  }
+
+  onBodeAxisChange(state: BodeAxisState): void {
+    this.bodeAxis = state;
+  }
+
+  bodeZoomOutOne(): void { this.bodePlotRef?.zoomOutOneLevel(); }
+  bodeZoomOutAll(): void { this.bodePlotRef?.zoomOutAll(); }
+  bodeResetZoom():  void { this.bodePlotRef?.resetZoom(); }
+
+  formatTimestamp(ms: number | undefined): string {
+    if (!ms || !Number.isFinite(ms)) return '—';
+    const d = new Date(ms);
+    return d.toISOString().replace('T', ' ').replace(/\.\d+Z$/, '');
   }
 }

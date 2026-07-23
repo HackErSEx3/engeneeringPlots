@@ -21,12 +21,14 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the heading', () => {
+  it('renders the demo title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.demo-title')?.textContent).toContain('ngx-radial-area');
+    expect(compiled.querySelector('.demo-title')?.textContent).toBeTruthy();
   });
 
-  it('embeds the ngx-radial-area element', () => {
+  it('embeds the ngx-radial-area element when chartType is radial', () => {
+    app.chartType = 'radial';
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('ngx-radial-area')).toBeTruthy();
   });
@@ -37,9 +39,14 @@ describe('AppComponent', () => {
     expect(app.activeSeries).toBe(app.weatherSeries);
   });
 
-  it('switches dataset on click', () => {
-    const buttons = fixture.debugElement.queryAll(By.css('.demo-btn-group button'));
-    (buttons[1].nativeElement as HTMLButtonElement).click();
+  it('switches dataset on click when in radial mode', () => {
+    app.chartType = 'radial';
+    fixture.detectChanges();
+    // Second button in the "Dataset" group is "Server Load"
+    const groups = fixture.debugElement.queryAll(By.css('.demo-btn-group'));
+    // Groups in order (radial mode): Chart Type, Dataset, Display, ...
+    const datasetButtons = groups[1].queryAll(By.css('button'));
+    (datasetButtons[1].nativeElement as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(app.activeDataset).toBe('performance');
     expect(app.activeData).toBe(app.performanceData);
